@@ -1,15 +1,13 @@
 package com.sms.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sms.dto.StudentDTO;
+import com.sms.dto.CourseDTO;
 import com.sms.exception.ResourceNotFoundException;
-import com.sms.service.IStudentService;
+import com.sms.service.ICourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Bean;
@@ -17,125 +15,125 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
-
-@WebMvcTest(StudentController.class)
-@DisplayName("StudentController Tests")
-class StudentControllerTest {
+@WebMvcTest(CourseController.class)
+@DisplayName("CourseController Tests")
+class CourseControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
-    private IStudentService studentService;
+    private ICourseService courseService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
 
 
-    private StudentDTO testResponse;
-    private StudentDTO testRequest;
+    private CourseDTO testResponse;
+    private CourseDTO testRequest;
 
     @BeforeEach
     void setUp() {
-        testResponse = StudentDTO.builder()
+        testResponse = CourseDTO.builder()
                 .id(10000)
-                .firstName("John")
-                .lastName("Doe")
-                .email("john@test.com")
-                .enrolledCourses(new ArrayList<>())
+                .name("Course1")
+                .description("C1")
+                .credits(3)
+                .enrolledStudents(new ArrayList<>())
                 .build();
 
-        testRequest = StudentDTO.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .email("john@test.com")
-                .phoneNumber("1234567890")
-                .address("Test Address")
-                .enrolledCourses(new ArrayList<>())
+        testRequest = CourseDTO.builder()
+                .name("Course1")
+                .description("C1")
+                .credits(3)
+                .enrolledStudents(new ArrayList<>())
                 .build();
     }
 
     @Test
-    @DisplayName("GET /api/students - Should return all active students")
-    void testGetAllStudentsShouldReturnOk() throws Exception {
-        when(studentService.getAllStudents()).thenReturn(List.of(testResponse));
+    @DisplayName("GET /api/course - Should return all active courses")
+    void testGetAllCoursesShouldReturnOk() throws Exception {
+        when(courseService.getAllCourses()).thenReturn(List.of(testResponse));
 
-        mockMvc.perform(get("/api/student"))
+        mockMvc.perform(get("/api/course"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].email").value("john@test.com"));
+                .andExpect(jsonPath("$[0].name").value("Course1"));
     }
 
     @Test
-    @DisplayName("GET /api/student/{id} - Should return student")
-    void testGetStudentByIdShouldReturnOk() throws Exception {
-        when(studentService.getStudentById(10000)).thenReturn(testResponse);
+    @DisplayName("GET /api/course/{id} - Should return student")
+    void testGetCourseByIdShouldReturnOk() throws Exception {
+        when(courseService.getCourseById(10000)).thenReturn(testResponse);
 
-        mockMvc.perform(get("/api/student/10000"))
+        mockMvc.perform(get("/api/course/10000"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10000))
-                .andExpect(jsonPath("$.firstName").value("John"));
+                .andExpect(jsonPath("$.name").value("Course1"));
     }
 
     @Test
-    @DisplayName("GET /api/students/{id} - Should return 404 when not found")
-    void testGetStudentByIdWhenNotFoundShouldReturn404() throws Exception {
-        when(studentService.getStudentById(11)).thenThrow(new ResourceNotFoundException("Student", "studentId","11"));
+    @DisplayName("GET /api/course/{id} - Should return 404 when not found")
+    void testGetCourseByIdWhenNotFoundShouldReturn404() throws Exception {
+        when(courseService.getCourseById(11)).thenThrow(new ResourceNotFoundException("Course", "courseId","11"));
 
-        mockMvc.perform(get("/api/student/11"))
+        mockMvc.perform(get("/api/course/11"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("POST /api/student - Should create student")
-    void testCreateStudentShouldReturnCreated() throws Exception {
-        when(studentService.createStudent(any())).thenReturn(testResponse);
+    @DisplayName("POST /api/course - Should create course")
+    void testCreateCourseShouldReturnCreated() throws Exception {
+        when(courseService.createCourse(any())).thenReturn(testResponse);
 
-        mockMvc.perform(post("/api/student")
+        mockMvc.perform(post("/api/course")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testRequest)))
                 .andExpect(status().isCreated());
     }
 
     @Test
-    @DisplayName("POST /api/students - Should return 400 on invalid data")
+    @DisplayName("POST /api/course - Should return 400 on invalid data")
     void testCreateStudentWithInvalidDataShouldReturn400() throws Exception {
-        StudentDTO invalid = StudentDTO.builder()
-                .firstName("").email("not-an-email").build();
+        CourseDTO invalid = CourseDTO.builder()
+                .name("").build();
 
-        mockMvc.perform(post("/api/student")
+        mockMvc.perform(post("/api/course")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalid)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("PUT /api/student/{id} - Should update student")
-    void testUpdateStudentShouldReturnOk() throws Exception {
-        when(studentService.updateStudent(eq(10000), any())).thenReturn(testResponse);
+    @DisplayName("PUT /api/course/{id} - Should update course")
+    void testUpdateCourseShouldReturnOk() throws Exception {
+        when(courseService.updateCourse(eq(10000), any())).thenReturn(testResponse);
 
-        mockMvc.perform(put("/api/student/1")
+        mockMvc.perform(put("/api/course/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testRequest)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("DELETE /api/students/{id} - Should delete student")
-    void testDeleteStudentShouldReturnNoContent() throws Exception {
-        doNothing().when(studentService).deleteStudent(10000);
+    @DisplayName("DELETE /api/course/{id} - Should delete course")
+    void testDeleteCourseShouldReturnNoContent() throws Exception {
+        doNothing().when(courseService).deleteCourse(10000);
 
-        mockMvc.perform(delete("/api/student/1"))
-                .andExpect(status().isOk());
+        mockMvc.perform(delete("/api/course/1"))
+                .andExpect(status().isNoContent());
     }
 
 
