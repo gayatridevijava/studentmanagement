@@ -37,7 +37,7 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public @Nullable StudentDTO getStudentById(Integer id) {
-       Student student = studentRepository.findByIdAndStatusEquals(id, Student.Status.Active).orElseThrow(
+       Student student = studentRepository.findByStudentIdAndStatusEquals(id, Student.Status.Active).orElseThrow(
                () -> new ResourceNotFoundException("Student", "studentId", id.toString())
 
        );
@@ -46,17 +46,16 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     @Transactional
-    public void createStudent(StudentDTO request) {
+    public StudentDTO createStudent(StudentDTO request) {
         Student student =  StudentMapper.mapToStudent(request,new Student());
-
-        studentRepository.save(student);
+        return StudentMapper.mapToStudentDTO(studentRepository.save(student),new StudentDTO());
 
     }
 
     @Override
     @Transactional
     public @Nullable StudentDTO updateStudent(Integer id, StudentDTO request) {
-        Student student = studentRepository.findByIdAndStatusEquals(id, Student.Status.Active).orElseThrow(
+        Student student = studentRepository.findByStudentIdAndStatusEquals(id, Student.Status.Active).orElseThrow(
                 () -> new ResourceNotFoundException("Student", "studentId", id.toString())
 
         );
@@ -102,7 +101,7 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     @Transactional
     public void deleteStudent(Integer id) {
-        Student student = studentRepository.findByIdAndStatusEquals(id, Student.Status.Active).orElseThrow(
+        Student student = studentRepository.findByStudentIdAndStatusEquals(id, Student.Status.Active).orElseThrow(
                 () -> new ResourceNotFoundException("Student", "studentId", id.toString())
         );
         student.getEnrollments().clear();

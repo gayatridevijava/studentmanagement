@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Integer> {
    List<Course> findAllByStatusEquals(Course.Status status);
-   Optional<Course> findByIdAndStatusEquals(Integer id, Course.Status status);
+   Optional<Course> findByCourseIdAndStatusEquals(Integer id, Course.Status status);
 
 }

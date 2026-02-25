@@ -30,7 +30,7 @@ public class CourseMapper {
     public static CourseDTO mapCourseEnrollments(CourseDTO courseDTO, List<Enrollment> enrollments) {
         courseDTO.setEnrolledStudents(
                 enrollments.stream().map(
-                        e -> StudentMapper.mapToStudentDTO(e.getStudent(),new StudentDTO())
+                        e -> e.getStudent()!=null?StudentMapper.mapToStudentDTO(e.getStudent(),new StudentDTO()):null
                 ).toList()
         );
         return courseDTO;

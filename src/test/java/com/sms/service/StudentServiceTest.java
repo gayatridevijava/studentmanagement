@@ -80,7 +80,7 @@ class StudentServiceImplTest {
     // ─── getAllStudents ───────────────────────────────────────────────────────
 
     @Test
-    void getAllStudents_returnsListOfActiveStudents() {
+    void testGetAllStudentsForActiveStudents() {
         when(studentRepository.findAllByStatusEquals(Student.Status.Active))
                 .thenReturn(List.of(activeStudent));
 
@@ -91,7 +91,7 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void getAllStudents_returnsEmptyListWhenNoActiveStudents() {
+    void testGetAllStudentsForEmptyListWhenNoActiveStudents() {
         when(studentRepository.findAllByStatusEquals(Student.Status.Active))
                 .thenReturn(List.of());
 
@@ -103,19 +103,19 @@ class StudentServiceImplTest {
     // ─── getStudentById ───────────────────────────────────────────────────────
 
     @Test
-    void getStudentById_returnsStudentDTOWhenFound() {
-        when(studentRepository.findByIdAndStatusEquals(1, Student.Status.Active))
+    void testGetStudentByIdForStudentFound() {
+        when(studentRepository.findByStudentIdAndStatusEquals(1, Student.Status.Active))
                 .thenReturn(Optional.of(activeStudent));
 
         StudentDTO result = studentService.getStudentById(1);
 
         assertThat(result).isNotNull();
-        verify(studentRepository).findByIdAndStatusEquals(1, Student.Status.Active);
+        verify(studentRepository).findByStudentIdAndStatusEquals(1, Student.Status.Active);
     }
 
     @Test
-    void getStudentById_throwsResourceNotFoundExceptionWhenNotFound() {
-        when(studentRepository.findByIdAndStatusEquals(99, Student.Status.Active))
+    void testGetStudentByIdForResourceNotFoundExceptionWhenNotFound() {
+        when(studentRepository.findByStudentIdAndStatusEquals(99, Student.Status.Active))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> studentService.getStudentById(99))
@@ -123,8 +123,8 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void getStudentById_throwsResourceNotFoundExceptionForInactiveStudent() {
-        when(studentRepository.findByIdAndStatusEquals(2, Student.Status.Active))
+    void testGetStudentByIdForResourceNotFoundExceptionForInactiveStudent() {
+        when(studentRepository.findByStudentIdAndStatusEquals(2, Student.Status.Active))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> studentService.getStudentById(2))
@@ -134,7 +134,7 @@ class StudentServiceImplTest {
     // ─── createStudent ────────────────────────────────────────────────────────
 
     @Test
-    void createStudent_savesStudentSuccessfully() {
+    void testCreateStudentForSuccess() {
         when(studentRepository.save(any(Student.class))).thenReturn(activeStudent);
 
         studentService.createStudent(studentDTO);
@@ -145,10 +145,10 @@ class StudentServiceImplTest {
     // ─── updateStudent ────────────────────────────────────────────────────────
 
     @Test
-    void updateStudent_updatesAndReturnsStudentDTO() {
+    void testUpdateStudentForSuccess() {
         activeStudent.setEnrollments(new ArrayList<>(List.of(enrollment)));
 
-        when(studentRepository.findByIdAndStatusEquals(1, Student.Status.Active))
+        when(studentRepository.findByStudentIdAndStatusEquals(1, Student.Status.Active))
                 .thenReturn(Optional.of(activeStudent));
         when(studentRepository.saveAndFlush(any(Student.class))).thenReturn(activeStudent);
 
@@ -160,8 +160,8 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void updateStudent_throwsResourceNotFoundExceptionWhenStudentNotFound() {
-        when(studentRepository.findByIdAndStatusEquals(99, Student.Status.Active))
+    void testUpdateStudentForResourceNotFoundExceptionWhenStudentNotFound() {
+        when(studentRepository.findByStudentIdAndStatusEquals(99, Student.Status.Active))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> studentService.updateStudent(99, studentDTO))
@@ -172,11 +172,11 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void updateStudent_clearsExistingEnrollmentsBeforeSaving() {
+    void testUpdateStudentClearsExistingEnrollmentsBeforeSaving() {
         List<Enrollment> enrollments = new ArrayList<>(List.of(enrollment));
         activeStudent.setEnrollments(enrollments);
 
-        when(studentRepository.findByIdAndStatusEquals(1, Student.Status.Active))
+        when(studentRepository.findByStudentIdAndStatusEquals(1, Student.Status.Active))
                 .thenReturn(Optional.of(activeStudent));
         when(studentRepository.saveAndFlush(any(Student.class))).thenReturn(activeStudent);
 
@@ -189,7 +189,7 @@ class StudentServiceImplTest {
     // ─── enrollInCourse ───────────────────────────────────────────────────────
 
     @Test
-    void enrollInCourse_savesEnrollmentSuccessfully() {
+    void testEnrollInCourseForSaveEnrollmentSuccess() {
         when(studentRepository.findById(1)).thenReturn(Optional.of(activeStudent));
         when(courseRepository.findById(1)).thenReturn(Optional.of(course));
         when(enrollmentRepository.save(any(Enrollment.class))).thenReturn(enrollment);
@@ -200,7 +200,7 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void enrollInCourse_throwsResourceNotFoundExceptionWhenStudentNotFound() {
+    void testEnrollInCourseForResourceNotFoundExceptionWhenStudentNotFound() {
         when(studentRepository.findById(99)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> studentService.enrollInCourse(99, 1))
@@ -210,7 +210,7 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void enrollInCourse_throwsResourceNotFoundExceptionWhenCourseNotFound() {
+    void testEnrollInCourseForResourceNotFoundExceptionWhenCourseNotFound() {
         when(studentRepository.findById(1)).thenReturn(Optional.of(activeStudent));
         when(courseRepository.findById(99)).thenReturn(Optional.empty());
 
@@ -223,7 +223,7 @@ class StudentServiceImplTest {
     // ─── unenrollFromCourse ───────────────────────────────────────────────────
 
     @Test
-    void unenrollFromCourse_deletesEnrollmentSuccessfully() {
+    void testUnenrollFromCourseForDeleteEnrollmentSuccess() {
         when(studentRepository.findById(1)).thenReturn(Optional.of(activeStudent));
         when(courseRepository.findById(1)).thenReturn(Optional.of(course));
 
@@ -233,7 +233,7 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void unenrollFromCourse_throwsResourceNotFoundExceptionWhenStudentNotFound() {
+    void testUnenrollFromCourseForResourceNotFoundExceptionWhenStudentNotFound() {
         when(studentRepository.findById(99)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> studentService.unenrollFromCourse(99, 1))
@@ -243,7 +243,7 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void unenrollFromCourse_throwsResourceNotFoundExceptionWhenCourseNotFound() {
+    void testUnenrollFromCourseForResourceNotFoundExceptionWhenCourseNotFound() {
         when(studentRepository.findById(1)).thenReturn(Optional.of(activeStudent));
         when(courseRepository.findById(99)).thenReturn(Optional.empty());
 
@@ -256,10 +256,10 @@ class StudentServiceImplTest {
     // ─── deleteStudent ────────────────────────────────────────────────────────
 
     @Test
-    void deleteStudent_setsStatusToInactiveAndClearsEnrollments() {
+    void testDeleteStudentForSetStatusToInactiveAndClearsEnrollments() {
         activeStudent.setEnrollments(new ArrayList<>(List.of(enrollment)));
 
-        when(studentRepository.findByIdAndStatusEquals(1, Student.Status.Active))
+        when(studentRepository.findByStudentIdAndStatusEquals(1, Student.Status.Active))
                 .thenReturn(Optional.of(activeStudent));
 
         studentService.deleteStudent(1);
@@ -271,8 +271,8 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void deleteStudent_throwsResourceNotFoundExceptionWhenStudentNotFound() {
-        when(studentRepository.findByIdAndStatusEquals(99, Student.Status.Active))
+    void testDeleteStudentForResourceNotFoundExceptionWhenStudentNotFound() {
+        when(studentRepository.findByStudentIdAndStatusEquals(99, Student.Status.Active))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> studentService.deleteStudent(99))
@@ -283,8 +283,8 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void deleteStudent_doesNotHardDelete() {
-        when(studentRepository.findByIdAndStatusEquals(1, Student.Status.Active))
+    void testDeleteStudentDoesNotHardDelete() {
+        when(studentRepository.findByStudentIdAndStatusEquals(1, Student.Status.Active))
                 .thenReturn(Optional.of(activeStudent));
 
         studentService.deleteStudent(1);

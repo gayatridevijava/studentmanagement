@@ -1,22 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.sms.service.StudentServiceImplTest
 -------------------------------------------------------------------------------
-Tests run: 18, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.518 s <<< FAILURE! -- in com.sms.service.StudentServiceImplTest
-com.sms.service.StudentServiceImplTest.updateStudent_clearsExistingEnrollmentsBeforeSaving -- Time elapsed: 0.006 s <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "java.util.List.isEmpty()" because the return value of "com.sms.dto.StudentDTO.getEnrolledCourses()" is null
-	at com.sms.mapper.StudentMapper.mapToStudent(StudentMapper.java:16)
-	at com.sms.service.impl.StudentServiceImpl.updateStudent(StudentServiceImpl.java:66)
-	at com.sms.service.StudentServiceImplTest.updateStudent_clearsExistingEnrollmentsBeforeSaving(StudentServiceTest.java:183)
-
-com.sms.service.StudentServiceImplTest.createStudent_savesStudentSuccessfully -- Time elapsed: 0.002 s <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "java.util.List.isEmpty()" because the return value of "com.sms.dto.StudentDTO.getEnrolledCourses()" is null
-	at com.sms.mapper.StudentMapper.mapToStudent(StudentMapper.java:16)
-	at com.sms.service.impl.StudentServiceImpl.createStudent(StudentServiceImpl.java:50)
-	at com.sms.service.StudentServiceImplTest.createStudent_savesStudentSuccessfully(StudentServiceTest.java:140)
-
-com.sms.service.StudentServiceImplTest.updateStudent_updatesAndReturnsStudentDTO -- Time elapsed: 0.001 s <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "java.util.List.isEmpty()" because the return value of "com.sms.dto.StudentDTO.getEnrolledCourses()" is null
-	at com.sms.mapper.StudentMapper.mapToStudent(StudentMapper.java:16)
-	at com.sms.service.impl.StudentServiceImpl.updateStudent(StudentServiceImpl.java:66)
-	at com.sms.service.StudentServiceImplTest.updateStudent_updatesAndReturnsStudentDTO(StudentServiceTest.java:155)
-
+Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.075 s -- in com.sms.service.StudentServiceImplTest

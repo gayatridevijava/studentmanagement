@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<Student,Integer> {
 
     List<Student> findAllByStatusEquals(Student.Status status);
-    Optional<Student> findByIdAndStatusEquals(Integer id, Student.Status status);
+    Optional<Student> findByStudentIdAndStatusEquals(Integer id, Student.Status status);
 }

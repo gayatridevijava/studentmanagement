@@ -35,7 +35,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public CourseDTO getCourseById(Integer id) {
-        Course course = courseRepository.findByIdAndStatusEquals(id, Course.Status.Active).orElseThrow(
+        Course course = courseRepository.findByCourseIdAndStatusEquals(id, Course.Status.Active).orElseThrow(
                 () -> new ResourceNotFoundException("Course","courseId",id.toString())
         );
         List<Enrollment> enrollments = studentEnrollmentRepository.findByCourse_CourseId(id);
@@ -53,7 +53,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public @Nullable CourseDTO updateCourse(Integer id, CourseDTO request) {
-        Course course = courseRepository.findByIdAndStatusEquals(id, Course.Status.Active).orElseThrow(
+        Course course = courseRepository.findByCourseIdAndStatusEquals(id, Course.Status.Active).orElseThrow(
                 () -> new ResourceNotFoundException("Course","courseId",id.toString())
         );
         course = courseRepository.save( CourseMapper.mapToCourse(request,course));
@@ -62,7 +62,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public void deleteCourse(Integer id) {
-        Course course = courseRepository.findByIdAndStatusEquals(id, Course.Status.Active).orElseThrow(
+        Course course = courseRepository.findByCourseIdAndStatusEquals(id, Course.Status.Active).orElseThrow(
                 () -> new ResourceNotFoundException("Course","courseId",id.toString())
         );
         course.setStatus(Course.Status.Inactive);

@@ -11,7 +11,7 @@ public interface IStudentService {
 
     @Nullable StudentDTO getStudentById(Integer id);
 
-    void createStudent(@Valid StudentDTO request);
+    StudentDTO createStudent(@Valid StudentDTO request);
 
     @Nullable StudentDTO updateStudent(Integer id, @Valid StudentDTO request);
 
