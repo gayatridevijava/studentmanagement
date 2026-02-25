@@ -28,7 +28,6 @@ student-management/
 **Prerequisites:** Java 17+, Maven 3.8+
 
 ```bash
-cd backend
 mvn clean install
 mvn spring-boot:run
 ```
