@@ -52,6 +52,7 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
+    @Transactional
     public @Nullable CourseDTO updateCourse(Integer id, CourseDTO request) {
         Course course = courseRepository.findByCourseIdAndStatusEquals(id, Course.Status.Active).orElseThrow(
                 () -> new ResourceNotFoundException("Course","courseId",id.toString())
@@ -61,6 +62,7 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
+    @Transactional
     public void deleteCourse(Integer id) {
         Course course = courseRepository.findByCourseIdAndStatusEquals(id, Course.Status.Active).orElseThrow(
                 () -> new ResourceNotFoundException("Course","courseId",id.toString())
